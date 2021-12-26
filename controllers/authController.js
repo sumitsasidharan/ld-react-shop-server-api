@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 // REGISTER
 const register = async (req, res) => {
@@ -39,8 +40,17 @@ const login = async (req, res) => {
       if (originalPassword !== req.body.password) {
          res.status(401).json('Wrong Credentials!');
       } else {
+         const accessToken = jwt.sign(
+            {
+               id: user._id,
+               isAdmin: user.isAdmin,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+         );
+
          const { password, ...others } = user._doc;
-         res.status(200).json(others);
+         res.status(200).json({ ...others, accessToken });
       }
    } catch (error) {
       console.log(error.message);

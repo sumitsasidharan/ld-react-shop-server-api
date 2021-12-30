@@ -77,10 +77,7 @@ const getAllProducts = async (req, res) => {
          products = await Product.find();
       }
 
-      res.status(200).json({
-         results: products.length,
-         products,
-      });
+      res.status(200).json(products);
    } catch (error) {
       console.log(error.message);
       res.status(500).json(error.message);
